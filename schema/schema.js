@@ -4,6 +4,7 @@ const {
     GraphQLString,
     GraphQLID,
     GraphQLInt,
+    GraphQLList,
     GraphQLSchema
 } = graphql;
 const _ = require('lodash');
@@ -12,7 +13,10 @@ const _ = require('lodash');
 var Books = [
     { id: "1", name: "Libro 1", genre: "Cucina", authorID: "1" },
     { id: "2", name: "Via col vento", genre: "Storico", authorID: "1" },
-    { id: "3", name: "Sulle ali della liberta'", genre: "Romantico", authorID: "2" }
+    { id: "3", name: "Sulle ali della liberta'", genre: "Romantico", authorID: "2" },
+    { id: "4", name: "Libro 2", genre: "Cucina", authorID: "1" },
+    { id: "5", name: "Via col vento la vendetta", genre: "Storico", authorID: "1" },
+    { id: "6", name: "Sulle ali della liberta' - seconda edizione", genre: "Romantico", authorID: "2" }
 ]
 
 var authors = [
@@ -40,7 +44,13 @@ const AuthorType = new GraphQLObjectType({
     fields: () => ({
         id: { type: GraphQLID },
         name: { type: GraphQLString },
-        age: { type: GraphQLInt }
+        age: { type: GraphQLInt },
+        books: {
+            type: new GraphQLList(BookType),
+            resolve: (parent, args) => {
+                return _.filter(Books, { authorID: parent.id })
+            }
+        }
     })
 })
 
